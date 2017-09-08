@@ -1,0 +1,14 @@
+[Thu Sep  7 21:44:58 2017] ::1:51706 [200]: /
+[Thu Sep  7 21:44:58 2017] ::1:51707 [404]: /favicon.ico - No such file or directory
+[Thu Sep  7 21:47:03 2017] ::1:51780 [200]: /
+[Thu Sep  7 21:47:03 2017] ::1:51781 Invalid request (Unexpected EOF)
+[Thu Sep  7 21:47:03 2017] ::1:51782 Invalid request (Unexpected EOF)
+[Thu Sep  7 21:47:03 2017] ::1:51783 Invalid request (Unexpected EOF)
+[Thu Sep  7 21:47:16 2017] ::1:51828 [200]: /
+[Thu Sep  7 21:47:29 2017] ::1:51829 Invalid request (Unexpected EOF)
+[Thu Sep  7 21:47:29 2017] ::1:51830 Invalid request (Unexpected EOF)
+[Thu Sep  7 21:47:36 2017] ::1:51873 [200]: /
+[Thu Sep  7 21:47:40 2017] ::1:51874 Invalid request (Unexpected EOF)
+[Thu Sep  7 21:47:40 2017] ::1:51875 Invalid request (Unexpected EOF)
+[Thu Sep  7 21:49:13 2017] ::1:52025 [200]: /
+[Thu Sep  7 21:49:55 2017] ::1:52133 [200]: /
