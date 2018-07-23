@@ -4,7 +4,7 @@ ini_set('display_errors',1);
 $cards = 1;
 $testing = 0;
 
-echo '<pre>';
+echo '<html><head><meta name="viewport" content="width=device-width, initial-scale=1"></head><body><pre>';
 
 $key = '711770f02eb30d3a1f2f67990b8b305b';
 $token = 'f98c2e353578ed66e00ae546adb10be9af429d5155988d57ac1e7e18aafc7675';
@@ -15,7 +15,6 @@ $batch_url_base = "https://api.trello.com/1/batch?urls=";
 $response = file_get_contents($url);
 $json = json_decode($response);
 
-
 $index = 0;
 $batch_url = $batch_url_base;
 foreach ($json as $board) {
@@ -23,29 +22,35 @@ foreach ($json as $board) {
 
     if ($testing && $board->name != 'Gevorg') continue;
 
+    //if ($board->name != 'Studio9') continue;
+
     $boards[$board->id]['name'] = $board->name;
     $boards[$board->id]['last_date'] = $board->dateLastActivity;
     $boards[$board->id]['url'] = $board->url;
 
     $batch_url .= "/boards/$board->id/lists?cards=open,";
 
-    if ($index > 9) {
+    if ($index > 3) {
         $batch_urls[] = trim($batch_url,',') . $key_token;
         $batch_url = $batch_url_base;
         $index = 0;
     }
     //break;
 }
-
 foreach ($batch_urls as $url) {
     $response = file_get_contents($url);
     $responses = json_decode($response);
 
     foreach ($responses as $lists) {
-        foreach ($lists->{'200'} as $list) {
+        //echo $url;
+        foreach ($lists as $val=>$sublists) {
+        foreach ($sublists as $list) {
+
             $board_id = $list->idBoard;
             $list_id = $list->id;
-
+/*
+            if (stripos($list->name,'gevorg')  !== FALSE) continue;
+            if (stripos($list->name,'testing')  !== FALSE) continue;
             if (stripos($list->name,'done')  !== FALSE) continue;
             if (stripos($list->name,'input') !== FALSE) continue;
             if (stripos($list->name,'ideas') !== FALSE) continue;
@@ -57,17 +62,51 @@ foreach ($batch_urls as $url) {
             if (stripos($list->name,'try') !== FALSE) continue;
             if (stripos($list->name,'finished') !== FALSE) continue;
             if (stripos($list->name,'completed') !== FALSE) continue;
-
-            $boards[$board_id]['lists'][$list_id]['name'] = $list->name;
+ */
+            $has_cards = false;
 
             foreach ($list->cards as $card) {
                 $tmp['name'] = $card->name;
                 $tmp['url'] = $card->url;
                 $tmp['last_date'] = $card->dateLastActivity;
                 $boards[$board_id]['lists'][$list_id]['cards'][$card->id] = $tmp;
+                $has_cards = true;
+            }
+            if ($has_cards) {
+                $boards[$board_id]['lists'][$list_id]['name'] = $list->name;
             }
         }
+        }
     }
+}
+
+function hasIgnoreString($str) {
+    $words = [
+        'Product Lines to Add to Site',
+        'Things That Wendy Notices',
+        'gevorg',
+        'testing',
+        'done',
+        'input',
+        'ideas',
+        'questions',
+        'next',
+        'long-term',
+        'longterm',
+        'long term',
+        'try',
+        'finished',
+        'completed',
+        'missing',
+    ];
+
+    foreach ($words as $word) {
+        if (stripos($str,$word) !== FALSE) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 $all_cards = array();
@@ -76,6 +115,14 @@ foreach ($boards as $board) {
     foreach ($board['lists'] as $list) {
         if (isset($list['cards']))
             foreach ($list['cards'] as $card) {
+                if (
+                    hasIgnoreString($board['name']) ||
+                    hasIgnoreString($list['name']) ||
+                    hasIgnoreString($card['name']) ||
+                    0
+                ) {
+                    continue;
+                }
                 $tmp = array();
                 $tmp['board'] = $board['name'];
                 $tmp['list'] = $list['name'];

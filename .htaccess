@@ -1,0 +1,8 @@
+AuthType Basic
+AuthName "Restricted"
+AuthUserFile /home/ec2-user/trellolists/.htpasswd
+Require valid-user
+
+RewriteRule /?\.htaccess$ - [F,L]
+RewriteRule /?\.htpasswd$ - [F,L]
+
